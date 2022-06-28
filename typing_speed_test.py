@@ -16,13 +16,6 @@ def wpm_test(stdscr):
     current_text = []
 
     while True:
-        key = stdscr.getkey()
-
-        if ord(key) == 27:
-            break
-
-        current_text.append(key)
-
         stdscr.clear()
         stdscr.addstr(target_text)
 
@@ -31,7 +24,14 @@ def wpm_test(stdscr):
 
         stdscr.refresh()
 
+        key = stdscr.getkey()
 
+        if ord(key) == 27:
+            break
+
+        current_text.append(key)
+
+        
 def main(stdscr):
     #foreground - green color, background - black color, represented by id 1
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
