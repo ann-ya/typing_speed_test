@@ -28,10 +28,14 @@ def wpm_test(stdscr):
 
         if ord(key) == 27:
             break
-
-        current_text.append(key)
+        if key in ("KEY_BACKSPACE", '\b', "\x7f"):
+            if len(current_text) > 0:
+                current_text.pop()
+        else:
+            current_text.append(key)
 
         
+
 def main(stdscr):
     #foreground - green color, background - black color, represented by id 1
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
