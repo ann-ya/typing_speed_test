@@ -1,6 +1,7 @@
 import curses
 from curses import wrapper
 import time
+import random
 
 def start_screen(stdscr):
     #to empty a screen
@@ -25,8 +26,16 @@ def display_text(stdscr, target, current, wpm=0):
         stdscr.addstr(0, i, char, color)
 
 
+def load_text():
+    #with - ensures that the file will be closed after you open it - Context Manager
+    with open("test_text.txt", "r") as f:
+        lines = f.readlines()
+        return random.choice(lines).strip()
+        #strip() would remove \n or any whitespace character
+
+
 def wpm_test(stdscr):
-    target_text = "Hello world this is some test text for this app!"
+    target_text = load_text()
     current_text = []
     wpm = 0
     start_time = time.time()
@@ -62,7 +71,6 @@ def wpm_test(stdscr):
             current_text.append(key)
 
         
-
 def main(stdscr):
     #foreground - green color, background - black color, represented by id 1
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
