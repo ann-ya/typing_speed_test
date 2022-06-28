@@ -1,5 +1,6 @@
 import curses
 from curses import wrapper
+import time
 
 def start_screen(stdscr):
     #to empty a screen
@@ -13,6 +14,7 @@ def start_screen(stdscr):
 
 def display_text(stdscr, target, current, wpm=0):
     stdscr.addstr(target)
+    stdscr.addstr(1, 0, f"WPM: {wpm}")
 
     for i, char in enumerate(current):
         correct_char = target[i]
@@ -26,13 +28,30 @@ def display_text(stdscr, target, current, wpm=0):
 def wpm_test(stdscr):
     target_text = "Hello world this is some test text for this app!"
     current_text = []
+    wpm = 0
+    start_time = time.time()
+    #program won't wait for a user to hit a key
+    stdscr.nodelay(True)
 
     while True:
+        time_elapsed = max(time.time() - start_time, 1)
+        wpm = round((len(current_text) / (time_elapsed / 60)) / 5)
+
         stdscr.clear()
-        display_text(stdscr, target_text, current_text)
+        display_text(stdscr, target_text, current_text, wpm)
         stdscr.refresh()
 
-        key = stdscr.getkey()
+        if "".join(current_text) == target_text:
+            stdscr.nodelay(False)
+            break
+
+        #If user doesn't enter a key (line 33, nodelay), this line <key = stdscr.getkey()> throws an exception.
+        #To handle it, except and continue need to be implemented. Continue will bring you back to the top of the while loop.
+        #If this line throws an exception, key variable doesn't have value, there is no need to check a type of a key.
+        try:
+            key = stdscr.getkey()
+        except:
+            continue
 
         if ord(key) == 27:
             break
@@ -51,6 +70,11 @@ def main(stdscr):
     curses.init_pair(3, curses.COLOR_WHITE, curses.COLOR_BLACK)
 
     start_screen(stdscr)
-    wpm_test(stdscr)
+    while True:
+        wpm_test(stdscr)
+        stdscr.addstr(2, 0, "You completed the text! Press any key to continue...")
+        key = stdscr.getkey()
+        if ord(key) == 27:
+            break
 
 wrapper(main)
