@@ -10,14 +10,27 @@ def start_screen(stdscr):
     #waits for a user to type smth, without getkey text would be shown for a sec and then dissapear, program would be closed immediately
     stdscr.getkey()
 
+
 def wpm_test(stdscr):
     target_text = "Hello world this is some test text for this app!"
     current_text = []
 
-    stdscr.clear()
-    stdscr.addstr(target_text)
-    stdscr.refresh()
-    stdscr.getkey()
+    while True:
+        key = stdscr.getkey()
+
+        if ord(key) == 27:
+            break
+
+        current_text.append(key)
+
+        stdscr.clear()
+        stdscr.addstr(target_text)
+
+        for char in current_text:
+            stdscr.addstr(char, curses.color_pair(1))
+
+        stdscr.refresh()
+
 
 def main(stdscr):
     #foreground - green color, background - black color, represented by id 1
